@@ -42,8 +42,16 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       }
     },
     async function (request, reply): Promise<PostEntity> {
-      // TODO: check post author!
       const { body } = request;
+      const author = await this.db.users.findOne({
+        key: "id",
+        equals: body.userId
+      });
+      if (!author) {
+        throw this.httpErrors.badRequest(
+          "User - post author not found!"
+        );
+      }
       const post = await this.db.posts.create(body);
       return post;
     }

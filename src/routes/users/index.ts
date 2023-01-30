@@ -60,14 +60,63 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       }
     },
     async function (request, reply): Promise<UserEntity> {
-      //TODO! handle posts, profile, subscribes
-      const userToDelete = await this.db.users.delete(request.id);
+      const { params } = request;
+      const userToDelete = await this.db.users.findOne({
+        key: "id",
+        equals: params.id
+      });
 
       if (!userToDelete) {
-        throw this.httpErrors.badRequest("User not found!");
+        throw this.httpErrors.badRequest("User not found");
       }
 
-      return userToDelete;
+      try {
+        const posts = await this.db.posts.findMany({
+          key: "userId",
+          equals: params.id
+        });
+
+        const profile = await this.db.profiles.findOne({
+          key: "userId",
+          equals: params.id
+        });
+
+        if (profile) {
+          await this.db.profiles.delete(profile.id);
+        }
+
+        const subscribers = await this.db.users.findMany({
+          key: "subscribedToUserIds",
+          inArray: params.id
+        });
+
+        await Promise.all(
+          posts.map(async (post) => {
+            await this.db.posts.delete(post.id);
+          })
+        );
+
+        await Promise.all(
+          subscribers.map(async (subscriber) => {
+            const filteredSubscriptions =
+              subscriber.subscribedToUserIds.filter(
+                (id) => id !== params.id
+              );
+
+            await this.db.users.change(subscriber.id, {
+              subscribedToUserIds: filteredSubscriptions
+            });
+          })
+        );
+
+        const deletedUser = await this.db.users.delete(params.id);
+
+        return deletedUser;
+      } catch (e: any) {
+        throw this.httpErrors.badRequest(
+          e?.message ?? "Something went wrong during user delete!"
+        );
+      }
     }
   );
 
@@ -186,23 +235,12 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
         const filteredSubscribedToUserIds =
           user.subscribedToUserIds.filter((id) => id !== params.id);
 
-        user.subscribedToUserIds = filteredSubscribedToUserIds;
-
         const unsubscribedUser = await this.db.users.change(
           body.userId,
           {
-            subscribedToUserIds: user.subscribedToUserIds
+            subscribedToUserIds: filteredSubscribedToUserIds
           }
         );
-        /* const subscribedUser = await this.db.users.change(
-          body.userId,
-          {
-            subscribedToUserIds: [
-              ...user.subscribedToUserIds,
-              params.id
-            ]
-          }
-        ); */
         return unsubscribedUser;
       } catch (e: any) {
         throw this.httpErrors.badRequest(
