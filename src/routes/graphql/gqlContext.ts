@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { Context } from './types/context.js';
+export interface Context {
+  prisma: PrismaClient;
+}
 
 export const gqlContext = (prisma: PrismaClient): Context => {
   return { prisma };

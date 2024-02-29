@@ -6,13 +6,13 @@ export const MemberTypeIdType = new GraphQLScalarType({
   name: 'MemberTypeId',
   serialize(value) {
     if (!isMemberTypeId(value)) {
-      throw new TypeError(`Invalid MemberTypeId`);
+      throw new TypeError(`Invalid MemberTypeId (failed to serialize)`);
     }
     return value;
   },
   parseValue(value) {
     if (!isMemberTypeId(value)) {
-      throw new TypeError(`Invalid MemberTypeID`);
+      throw new TypeError(`Invalid MemberTypeId (failed to parse)`);
     }
     return value;
   },

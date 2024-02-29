@@ -10,13 +10,13 @@ export const UUIDType = new GraphQLScalarType({
   name: 'UUID',
   serialize(value) {
     if (!isUUID(value)) {
-      throw new TypeError(`Invalid UUID.`);
+      throw new TypeError(`Invalid UUID (failed to serialize)`);
     }
     return value;
   },
   parseValue(value) {
     if (!isUUID(value)) {
-      throw new TypeError(`Invalid UUID.`);
+      throw new TypeError(`Invalid UUID (failed to parse).`);
     }
     return value;
   },

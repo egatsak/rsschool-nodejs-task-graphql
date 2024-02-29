@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull } from 'graphql';
-import { ProfileType } from '../types/profile.type.js';
-import { UUIDType } from '../types/uuid.type.js';
-import { Context } from '../types/context.js';
+import { ProfileType } from '../types/profile.js';
+import { Context } from '../gqlContext.js';
+import { UUIDType } from '../types/uuid.js';
 
 interface Args {
   id: string;
