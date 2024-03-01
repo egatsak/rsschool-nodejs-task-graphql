@@ -3,6 +3,7 @@ import {
   GraphQLFloat,
   GraphQLInputObjectType,
   GraphQLNonNull,
+  GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
 import { User } from '@prisma/client';
@@ -22,8 +23,7 @@ const CreateUserInputType = new GraphQLInputObjectType({
 });
 
 export const createUser: GraphQLFieldConfig<void, Context, Args> = {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  type: UserType,
+  type: UserType as GraphQLObjectType,
   args: { dto: { type: new GraphQLNonNull(CreateUserInputType) } },
   resolve: (_src, args, context) => context.prisma.user.create({ data: args.dto }),
 };

@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLNonNull } from 'graphql';
+import { GraphQLFieldConfig, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 import { Context } from '../gqlContext.js';
 import { UserType } from '../types/user.js';
 import { UUIDType } from '../types/uuid.js';
@@ -9,8 +9,7 @@ interface Args {
 }
 
 export const subscribeTo: GraphQLFieldConfig<void, Context, Args> = {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  type: UserType,
+  type: UserType as GraphQLObjectType,
   args: {
     userId: { type: new GraphQLNonNull(UUIDType) },
     authorId: { type: new GraphQLNonNull(UUIDType) },
