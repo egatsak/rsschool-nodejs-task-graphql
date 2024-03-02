@@ -9,8 +9,8 @@ interface Args {
 export const deleteUser: GraphQLFieldConfig<void, Context, Args> = {
   type: new GraphQLNonNull(UUIDType),
   args: { id: { type: new GraphQLNonNull(UUIDType) } },
-  resolve: async (_src, args, ctx) => {
-    const user = await ctx.prisma.user.delete({ where: { id: args.id } });
+  resolve: async (_src, args, context) => {
+    const user = await context.prisma.user.delete({ where: { id: args.id } });
     return user.id;
   },
 };
