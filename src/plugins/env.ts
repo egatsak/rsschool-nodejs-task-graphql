@@ -6,11 +6,12 @@ const schema = Type.Object({
   FASTIFY_PORT: Type.Integer(),
 });
 
-export default fp(async (fastify) =>
-  fastify.register(fastifyEnv, {
-    dotenv: true,
-    schema,
-  }),
+export default fp(
+  async (fastify) =>
+    await fastify.register(fastifyEnv, {
+      dotenv: true,
+      schema,
+    }),
 );
 
 declare module 'fastify' {
