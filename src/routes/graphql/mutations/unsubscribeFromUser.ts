@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLInt, GraphQLNonNull } from 'graphql';
+import { GraphQLFieldConfig, GraphQLNonNull } from 'graphql';
 import { Context } from '../gqlContext.js';
 import { UUIDType } from '../types/uuid.js';
 
@@ -8,7 +8,7 @@ interface Args {
 }
 
 export const unsubscribeFrom: GraphQLFieldConfig<void, Context, Args> = {
-  type: GraphQLInt,
+  type: UUIDType,
   args: {
     userId: { type: new GraphQLNonNull(UUIDType) },
     authorId: { type: new GraphQLNonNull(UUIDType) },
