@@ -13,10 +13,17 @@ export const unsubscribeFrom: GraphQLFieldConfig<void, Context, Args> = {
     userId: { type: new GraphQLNonNull(UUIDType) },
     authorId: { type: new GraphQLNonNull(UUIDType) },
   },
+
   resolve: async (_src, args, context) => {
-    const result = await context.prisma.subscribersOnAuthors.deleteMany({
-      where: { subscriberId: args.userId, authorId: args.authorId },
+    const result = await context.prisma.subscribersOnAuthors.delete({
+      where: {
+        subscriberId_authorId: {
+          subscriberId: args.userId,
+          authorId: args.authorId,
+        },
+      },
     });
-    return result.count;
+
+    return result.authorId;
   },
 };
